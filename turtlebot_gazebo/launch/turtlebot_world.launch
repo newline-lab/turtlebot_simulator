@@ -7,19 +7,41 @@
   <arg name="stacks"            default="$(env TURTLEBOT_STACKS)"       doc="stack type displayed in visualisation/simulation [circles, hexagons]"/>
   <arg name="3d_sensor"         default="$(env TURTLEBOT_3D_SENSOR)"    doc="3d sensor types [astra, kinect, asus_xtion_pro]"/>
   <arg name="laser"             default="$(env TURTLEBOT_LASER)"        doc="laser sensor type [hokuyo]"/>
+  <arg name="turtlebot"         default="true"  doc="mobile base type [ground, turtlebot]"/>
 
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="use_sim_time" value="true"/>
     <arg name="debug" value="false"/>
     <arg name="gui" value="$(arg gui)" />
     <arg name="world_name" value="$(arg world_file)"/>
+    <arg name="paused" value="false"/>
+    <arg name="headless" value="false"/>
+    <arg name="verbose" value="true"/>
   </include>
+
+    <!-- Load joint controller configurations from YAML file to parameter server -->
+  <rosparam file="$(find widowx_arm_controller)/config/widowx_arm_control.yaml" command="load"
+            if="$(arg turtlebot)"/>
+
+  <!-- load the controllers -->
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+    output="screen" ns="/widowx_arm"
+    args=" joint_state_controller
+           joint_1_controller
+           joint_2_controller
+           joint_3_controller
+           joint_4_controller
+           joint_5_controller
+           gripper_controller
+           gripper_mimic_controller"
+        if="$(arg turtlebot)"/>
 
   <include file="$(find turtlebot_gazebo)/launch/includes/$(arg base).launch.xml">
     <arg name="base" value="$(arg base)"/>
     <arg name="stacks" value="$(arg stacks)"/>
     <arg name="3d_sensor" value="$(arg 3d_sensor)"/>
     <arg name="laser"  value="$(arg laser)"/>
+    <arg name="turtlebot" value="$(arg turtlebot)"/>
   </include>
 
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
@@ -36,4 +58,5 @@
     <remap from="image" to="/camera/depth/image_raw"/>
     <remap from="scan" to="/scan"/>
   </node>
+
 </launch>
