@@ -7,7 +7,9 @@
 # But if you come across a script that starts with a colon (Like this one), now you will know why. ~ Jonathan Leffler
 : ${TURTLEBOT_GAZEBO_MAP_FILE:=`rospack find turtlebot_gazebo`/maps/playground.yaml}
 : ${TURTLEBOT_GAZEBO_WORLD_FILE:=`rospack find turtlebot_gazebo`/worlds/playground.world}
+: ${TURTLEBOT_GAZEBO_EMPTY_WORLD_FILE:=`rospack find turtlebot_gazebo`/worlds/empty.world}
 
 # Exports
 export TURTLEBOT_GAZEBO_MAP_FILE
 export TURTLEBOT_GAZEBO_WORLD_FILE
+export TURTLEBOT_GAZEBO_EMPTY_WORLD_FILE
